@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 from config import settings
 
@@ -24,3 +25,14 @@ class Habit(models.Model):
     class Meta:
         verbose_name = 'Привычка'
         verbose_name_plural = 'Привычки'
+
+    def clean(self):
+        super().clean()
+
+        if self.is_enjoyed and (self.reward or self.related_habit):
+            raise ValidationError("У приятной привычки не может быть вознаграждения или связанной привычки.")
+
+        if not self.reward and not self.related_habit:
+            raise ValidationError(
+                "В модели должно быть заполнено или поле вознаграждения, или поле связанной привычки, только одно из "
+                "двух.")
