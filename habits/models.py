@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 from config import settings
 
@@ -11,9 +10,9 @@ class Habit(models.Model):
     time = models.TimeField(verbose_name='Время')
     action = models.CharField(max_length=255, verbose_name='Действие')
     is_enjoyed = models.BooleanField(default=False, verbose_name='Признак приятной привычки')
-    related_habit = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name='связанная привычка', null=True,
+    related_habit = models.ForeignKey('self', on_delete=models.SET_NULL, verbose_name='связанная привычка', null=True,
                                       blank=True)
-    periodicity = models.IntegerField(default=1, verbose_name='Периодичность')
+    frequency = models.IntegerField(default=1, verbose_name='Периодичность')
     reward = models.CharField(max_length=255, verbose_name='Вознаграждение', null=True,
                               blank=True)
     execution_time = models.IntegerField(verbose_name='Время на выполнение', null=True, blank=True)
