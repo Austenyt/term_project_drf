@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 
@@ -7,7 +8,7 @@ class RewardOrRelatedHabitValidator:
             raise ValidationError("Награда и связанная привычка не могут быть заданы одновременно.")
 
 
-class ExecutionTimeValidator:
+class DurationValidator:
     def __call__(self, value):
         if value.execution_time > 120:
             raise ValidationError("Время выполнения не может превышать 120 секунд.")
@@ -27,5 +28,7 @@ class EnjoyedHabitValidator:
 
 class FrequencyValidator:
     def __call__(self, value):
-        if value.frequency < 1:
-            raise ValidationError("Нельзя выполнять привычку реже, чем 1 раз в 7 дней.")
+        # Проверяем, что хотя бы одно выполнение привычки за неделю
+        one_week_ago = timezone.now() - timezone.timedelta(days=7)
+        if not value.date.filter(date__gte=one_week_ago).exists():
+            raise ValidationError("Необходимо выполнить привычку хотя бы один раз за неделю.")
