@@ -12,7 +12,7 @@ def habit_scheduler():
     for habit in habits:
         now = datetime.datetime.now()
         now = timezone.make_aware(now, timezone.get_current_timezone())
-        if not habit.is_nice and now.hour == habit.time.hour and now.minute == habit.time.minute:
+        if not habit.is_enjoyed and now.hour == habit.time.hour and now.minute == habit.time.minute:
             text = f"Я буду {habit.action} в {habit.time.strftime('%H:%M')} в {habit.place}"
             user_chat_id = habit.user.chat_id  # Получаем chat_id пользователя из модели User
             send_message(text, user_chat_id)  # Отправляем сообщение с использованием числового chat_id
