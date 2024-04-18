@@ -1,34 +1,60 @@
-from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 
 class RewardOrRelatedHabitValidator:
+    def __init__(self, reward, habit):
+        self.reward = reward
+        self.habit = habit
+
     def __call__(self, value):
-        if value.reward and value.related_habit:
-            raise ValidationError("Награда и связанная привычка не могут быть заданы одновременно.")
+        reward = dict(value).get(self.reward)
+        habit = dict(value).get(self.habit)
+        if reward and habit:
+            raise ValidationError('Нельзя одновременно выбирать связанную привычку и вознаграждение')
 
 
-class DurationValidator:
+class LastingValidator:
+    def __init__(self, lasting):
+        self.lasting = lasting
+
     def __call__(self, value):
-        if value.execution_time > 120:
-            raise ValidationError("Время выполнения не может превышать 120 секунд.")
+        lasting = dict(value).get(self.lasting)
+        if lasting > 120:
+            raise ValidationError('Время выполнения привычки не должно быть больше 120 секунд')
 
 
 class RelatedHabitValidator:
+    def __init__(self, habit):
+        self.habit = habit
+
     def __call__(self, value):
-        if value.related_habit and not value.related_habit.is_enjoyed:
-            raise ValidationError("В связанные привычки могут попадать только привычки с признаком приятной привычки.")
+        if value.get(self.habit):
+            is_enjoyed = dict(value).get(self.habit).is_enjoyed
+            if not is_enjoyed:
+                raise ValidationError('В связанные привычки могут попадать только привычки с признаком приятной '
+                                      'привычки')
 
 
 class EnjoyedHabitValidator:
+    def __init__(self, enjoyed_habit, reward, habit):
+        self.habit_is_enjoyed = enjoyed_habit
+        self.reward = reward
+        self.habit = habit
+
     def __call__(self, value):
-        if value.is_enjoyed and (value.reward or value.related_habit):
-            raise ValidationError("У приятной привычки не может быть вознаграждения или связанной привычки.")
+        enjoyed_habit = dict(value).get(self.enjoyed_habit)
+        reward = dict(value).get(self.reward)
+        habit = dict(value).get(self.habit)
+        if enjoyed_habit:
+            if reward or habit:
+                raise ValidationError('У приятной привычки не может быть вознаграждения или связанной привычки')
 
 
 class FrequencyValidator:
+    def __init__(self, frequency):
+        self.frequency = frequency
+
     def __call__(self, value):
-        # Проверяем, что хотя бы одно выполнение привычки за неделю
-        one_week_ago = timezone.now() - timezone.timedelta(days=7)
-        if not value.date.filter(date__gte=one_week_ago).exists():
-            raise ValidationError("Необходимо выполнить привычку хотя бы один раз за неделю.")
+        frequency = dict(value).get(self.frequency)
+        if frequency < 1:
+            raise ValidationError('Нельзя выполнять привычку реже, чем 1 раз в 7 дней')

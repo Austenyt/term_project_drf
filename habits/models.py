@@ -15,7 +15,7 @@ class Habit(models.Model):
     frequency = models.PositiveIntegerField(default=1, verbose_name='Периодичность')
     reward = models.CharField(max_length=255, verbose_name='Вознаграждение', null=True,
                               blank=True)
-    duration = models.PositiveIntegerField(verbose_name='Время на выполнение', null=True, blank=True)
+    lasting = models.PositiveIntegerField(verbose_name='Время на выполнение', null=True, blank=True)
     is_public = models.BooleanField(default=False, verbose_name='Признак публичности')
 
     def __str__(self):
