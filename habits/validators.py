@@ -36,16 +36,16 @@ class RelatedHabitValidator:
 
 
 class EnjoyedHabitValidator:
-    def __init__(self, enjoyed_habit, reward, habit):
-        self.habit_is_enjoyed = enjoyed_habit
+    def __init__(self, habit_is_enjoyed, reward, habit):
+        self.habit_is_enjoyed = habit_is_enjoyed
         self.reward = reward
         self.habit = habit
 
     def __call__(self, value):
-        enjoyed_habit = dict(value).get(self.enjoyed_habit)
+        habit_is_enjoyed = dict(value).get(self.habit_is_enjoyed)
         reward = dict(value).get(self.reward)
         habit = dict(value).get(self.habit)
-        if enjoyed_habit:
+        if habit_is_enjoyed:
             if reward or habit:
                 raise ValidationError('У приятной привычки не может быть вознаграждения или связанной привычки')
 

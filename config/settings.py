@@ -168,6 +168,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     ]
 
+CORS_ALLOW_ALL_ORIGINS = False
+
 # Celery settings
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
