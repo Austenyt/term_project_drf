@@ -17,8 +17,8 @@ def habit_scheduler():
             user_chat_id = habit.user.chat_id  # Получаем chat_id пользователя из модели User
             send_message(text, user_chat_id)  # Отправляем сообщение с использованием числового chat_id
 
-            if habit.associated_hab:
-                text = f"Затем я сделаю: {habit.associated_hab}"
+            if habit.related_habit:
+                text = f"Затем я сделаю: {habit.related_habit}"
                 send_message(text, user_chat_id)
             elif habit.reward:
                 text = f"Я получу: {habit.reward}"
